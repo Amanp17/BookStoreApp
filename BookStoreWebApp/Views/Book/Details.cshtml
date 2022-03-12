@@ -1,0 +1,52 @@
+﻿@model BookModelDTO
+@{
+    ViewData["Title"] = "Book Details - "+ Model.Name;
+}
+
+<div class="container">
+    <h3 class="display-4 justify-content-around">Book Details</h3>
+    <div class="row">
+
+        <div class="col-md-6">
+            <img src="@Model.FilePath" />
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>@Model.Name</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-primary">
+                    <span class="label label-primary">By :</span>
+                    <span class="font-monospace">@Model.AuthorName</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="description">
+                        @Model.Description
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="btn-group">
+                        <a class="btn btn-outline-primary" asp-area="" asp-controller="Book" asp-action="DownloadFile" asp-route-id="@Model.BookPdfPath">Download</a>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+            <ul class="list-group">
+                <li class="list-group-item"><span class="font-weight-bold">Category : </span>@Model.Category</li>
+                <li class="list-group-item"><span class="font-weight-bold">Total Pages : </span>@Model.PageNo</li>
+                <li class="list-group-item"><span class="font-weight-bold">Price : </span>@Model.Price</li>
+                <li class="list-group-item"><span class="font-weight-bold">Language : </span>@Model.Language</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+

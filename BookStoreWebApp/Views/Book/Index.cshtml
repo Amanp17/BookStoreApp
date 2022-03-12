@@ -1,0 +1,13 @@
+﻿@model IEnumerable<BookModelDTO>
+@{
+    ViewData["Title"] = "All Books";
+}
+
+<div class="container">
+    <div class="row">
+        @foreach (var book in Model)
+        {
+            <partial name="_BookThumbnail" model="@book"/>
+        }
+    </div>
+</div>

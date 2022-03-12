@@ -1,0 +1,92 @@
+﻿@model BookModelDTO
+@inject BookStoreWebApp.Repository.ILanguageRepository _languageRepo
+@{
+    ViewData["Title"] = "Add New Book";
+}
+<div class="container">
+    <h3 class="display-6">Add New Book</h3>
+    @if (ViewBag.IsSuccess == true)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Book Addedd Successfully!! </strong>Click <a asp-controller="Book" asp-action="Details" asp-route-id="@ViewBag.BookId">here</a> to View More
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @*enctype=multipart/form-data is Used so that controller can recognize the type of file that is Coming to it*@
+    <form method="post" enctype="multipart/form-data" asp-controller="Book" asp-action="AddBookData">
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input type="text" asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AuthorName"></label>
+            <input type="text" asp-for="AuthorName" class="form-control" />
+            <span asp-validation-for="AuthorName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input type="text" asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Category"></label>
+            <input type="text" asp-for="Category" class="form-control" />
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PageNo"></label>
+            <input type="text" asp-for="PageNo" class="form-control" />
+            <span asp-validation-for="PageNo" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Price"></label>
+            <input type="text" asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LanguageId">Language</label>
+            <select asp-for="LanguageId" class="form-control" asp-items="(await _languageRepo.GetLanguage()).Select(x=> new SelectListItem() { Text=x.Language,Value=x.ID.ToString()})">
+                <option value="">Please Select Language</option>
+            </select>
+            <span asp-validation-for="LanguageId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CoverPhoto"></label>
+            <div class="custom-file">
+                <input asp-for="CoverPhoto" class="custom-file-input" id="coverPage">
+                <label class="custom-file-label" for="customfile">Choose an Cover Image</label>
+            </div>
+            <span asp-validation-for="CoverPhoto" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="BookPdf">Upload Book File</label>
+            <div class="custom-file">
+                <input asp-for="BookPdf" class="custom-file-input" id="coverPage">
+                <label class="custom-file-label" for="customfile">Choose an PDF file of Book</label>
+            </div>
+            <span asp-validation-for="BookPdf" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Add Book" class="btn btn-outline-primary" />
+        </div>
+    </form>
+</div>
+
+@section CoverImageName{
+    <script>
+        $(document).ready(function () {
+            $('.custom-file-input').on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).next('.custom-file-label').html(fileName);
+            });
+        });
+    </script>
+}

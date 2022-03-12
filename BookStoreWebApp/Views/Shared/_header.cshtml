@@ -1,0 +1,43 @@
+﻿@*@using Microsoft.Extensions.Configuration
+@inject IConfiguration _configuration
+@{ 
+    //var Configuration = _configuration.GetSection("Alert");
+    var newBook = new NewBookConfig();
+    _configuration.Bind("Alert", newBook);
+}*@
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container">
+        <a class="navbar-brand justify-content-around" asp-area="" asp-controller="Home" asp-action="Index">Book Store</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse d-sm-flex flex-sm-row-reverse">
+            <ul class="navbar-nav flex-grow-1">
+               @*Partial _LoginNav.cshtml file is Used*@ 
+                <partial name="_LoginNav"/>
+            </ul>
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Index">All Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="AddBookForm">Add Books</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+@*Reading Data From the appsettings and Binding with the Model*@
+@*@if (newBook.IsNewBook)
+{
+    <div class="alert alert-info" role="alert">
+        New Book In the Market Do Check It Out <b>@(newBook.BookName)</b>!!
+    </div>
+}*@

@@ -1,0 +1,18 @@
+﻿@model BookModelDTO
+<div class="col-md-4">
+    <div class="card mb-4">
+        <div class="card h-50">
+            <img src="@Model.FilePath">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Name</h5>
+                <p class="card-subtitle mb-2 text-muted">@Model.Title</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                        <a class="btn btn-outline-primary" asp-area="" asp-controller="Book" asp-action="Details" asp-route-id="@Model.Id">View Details</a>
+                    </div>
+                    <small class="text-muted">~ @(string.IsNullOrEmpty(Model.AuthorName)?"Anonymous":Model.AuthorName)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
