@@ -2,6 +2,7 @@
 using BookStoreWebApp.Models;
 using BookStoreWebApp.Service;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,17 @@ namespace BookStoreWebApp.Repository
         private readonly UserManager<AccountUser> _user;
         private readonly SignInManager<AccountUser> _signInManager;
         private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
 
         public AccountRepository(UserManager<AccountUser> User,SignInManager<AccountUser> signInManager,
-            IUserService userService)
+            IUserService userService,IEmailService emailService,IConfiguration configuration)
         {
             _user = User;
             _signInManager = signInManager;
             _userService = userService;
+            _emailService = emailService;
+            _configuration = configuration;
         }
 
         public async Task<IdentityResult> CreateUserAsync(SignUpDTO UserModel)
@@ -35,6 +40,14 @@ namespace BookStoreWebApp.Repository
             };
             //CreateAsync Method will Create the user with its Password
             var result = await _user.CreateAsync(Users, UserModel.Password);
+            if (result.Succeeded)
+            {
+                var token = await _user.GenerateEmailConfirmationTokenAsync(Users);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    await SendEmailConfirmation(Users, token);
+                }
+            }
 
             //return type will be IdentityResult
             return result;
@@ -60,6 +73,28 @@ namespace BookStoreWebApp.Repository
             //Changes Password of User having Current Password and New Password
             var result = await _user.ChangePasswordAsync(User, changePassword.CurrentPassword, changePassword.NewPassword);
             return result;
+        }
+        public async Task<IdentityResult> ConfirmEmailAsync(string Uid,string token)
+        {
+            var user = await _user.FindByIdAsync(Uid);
+            var result = await _user.ConfirmEmailAsync(user, token);
+            return result;
+        }
+        private async Task SendEmailConfirmation(AccountUser accountUser,string token)
+        {
+            string appDomain = _configuration.GetSection("Application:AppDomain").Value;
+            string confirmationLink = _configuration.GetSection("Application:EmailConfirmation").Value;
+            UserEmailOptions userEmailOptions = new UserEmailOptions
+            {
+                ToEmail = new List<string>() { accountUser.Email },
+                PlaceHolder = new List<KeyValuePair<string, string>>()
+                {
+                    new KeyValuePair<string, string>("{{UserName}}",accountUser.FirstName+" "+accountUser.LastName),
+                    new KeyValuePair<string, string>("{{Link}}",string.Format(appDomain + confirmationLink,accountUser.Id,token))
+                }
+            };
+
+            await _emailService.SendEmailConfirmation(userEmailOptions);
         }
     }
 }

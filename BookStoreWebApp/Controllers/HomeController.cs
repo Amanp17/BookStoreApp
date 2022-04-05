@@ -1,4 +1,5 @@
 ﻿using BookStoreWebApp.Models;
+using BookStoreWebApp.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -14,16 +15,18 @@ namespace BookStoreWebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public HomeController(ILogger<HomeController> logger,IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger,IConfiguration configuration,IEmailService emailService)
         {
             _logger = logger;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-        
+            
             return View();
         }
 

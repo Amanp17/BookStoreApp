@@ -69,7 +69,14 @@ namespace BookStoreWebApp.Controllers
                     //If LoggedIn Successfully Then Enter Into Home Page
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("", "Invalid Credintial");
+                if (result.IsNotAllowed)
+                {
+                    ModelState.AddModelError("", "User Not Allowed");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid Credintial");
+                }
             }
             return View(nameof(login));
         }
@@ -104,6 +111,20 @@ namespace BookStoreWebApp.Controllers
                 }
             }
             return View(changePassword);
+        }
+        [HttpGet("confirm-email")]
+        public async Task<ActionResult> ConfirmEmail(string Uid, string token)
+        {
+            if(!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(Uid))
+            {
+                token = token.Replace(' ', '+');
+                var result = await _accountRepository.ConfirmEmailAsync(Uid, token);
+                if (result.Succeeded)
+                {
+                    ViewBag.IsSuceess = true;
+                }
+            }
+            return View();
         }
 
 

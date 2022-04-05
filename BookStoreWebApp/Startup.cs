@@ -1,5 +1,6 @@
 using BookStoreWebApp.Data;
 using BookStoreWebApp.Helper;
+using BookStoreWebApp.Models;
 using BookStoreWebApp.Repository;
 using BookStoreWebApp.Service;
 using Microsoft.AspNetCore.Builder;
@@ -39,7 +40,7 @@ namespace BookStoreWebApp
 
             //For Identity Core Connecting with the database
             services.AddIdentity<AccountUser, IdentityRole>()
-                .AddEntityFrameworkStores<BookStoreContext>();
+                .AddEntityFrameworkStores<BookStoreContext>().AddDefaultTokenProviders();
 
             //For Custom Validations on the Identity Core Password
             services.Configure<IdentityOptions>(options =>
@@ -49,6 +50,8 @@ namespace BookStoreWebApp
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireNonAlphanumeric = false;
+
+                options.SignIn.RequireConfirmedEmail = true;
             });
             //Configure the Application Cookie
             services.ConfigureApplicationCookie(Config =>
@@ -73,6 +76,9 @@ namespace BookStoreWebApp
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IUserClaimsPrincipalFactory<AccountUser>, ApplicationUserClaimsPrincipleFactory>();   //Helper For the Claims for storing users Info
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEmailService, EmailService>();
+
+            services.Configure<SMTPConfigModel>(Configuration.GetSection("SMTPConfig"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
